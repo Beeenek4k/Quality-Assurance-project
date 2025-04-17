@@ -28,38 +28,40 @@ Before setting up the project, ensure you have:
 Installation:
 Clone the repository and install dependencies:
 
-bash
-git clone https://github.com/YOUR_USERNAME/Quality-Assurance.git
-cd Quality-Assurance
-npm install
+- bash
+- git clone https://github.com/YOUR_USERNAME/Quality-Assurance.git
+- cd Quality-Assurance
+- npm install
+  
 Set up environment variables:
 
-bash
-cp sample.env .env
+- bash
+- cp sample.env .env
+  
 Configure .env with required variables:
 
-ini
-NODE_ENV=development
-DATABASE_URL=mongodb://localhost:27017/your-db
+- ini
+- NODE_ENV=development
+- DATABASE_URL=mongodb://localhost:27017/your-db
+  
 Run the application:
 
-bash
-npm start
-Testing
-Run Unit Tests
-bash
-npm run test
-Run Functional Tests
-bash
-npm run test:functional
-API Testing with Postman
-Import the API collection to Postman
+- bash
+- npm start
+- Testing
+- Run Unit Tests
+- bash
+- npm run test
+- Run Functional Tests
+- bash
+- npm run test:functional
+- API Testing with Postman
+- Import the API collection to Postman
 
 Test endpoints like:
 
-GET /api/status
-
-POST /api/test
+- GET /api/status
+- POST /api/test
 
 Continuous Integration (CI/CD)
 This project includes GitHub Actions to automate tests on each push or pull request.
