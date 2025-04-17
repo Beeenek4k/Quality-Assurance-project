@@ -1,0 +1,6 @@
+Run your tests:
+	npm run test
+
+Deploy your API (Render, Vercel, or Heroku)
+
+Submit your GitHub repository URL and live API link to FreeCodeCamp

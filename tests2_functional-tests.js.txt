@@ -1,0 +1,37 @@
+const chai = require("chai");
+const chaiHttp = require("chai-http");
+const server = require("../server");
+
+chai.use(chaiHttp);
+const assert = chai.assert;
+
+suite("Functional Tests", function () {
+  test("Valid input conversion (GET /api/convert?input=10L)", function (done) {
+    chai.request(server)
+      .get("/api/convert?input=10L")
+      .end((err, res) => {
+        assert.equal(res.body.initNum, 10);
+        assert.equal(res.body.initUnit, "L");
+        assert.equal(res.body.returnUnit, "gal");
+        done();
+      });
+  });
+
+  test("Invalid unit (GET /api/convert?input=32g)", function (done) {
+    chai.request(server)
+      .get("/api/convert?input=32g")
+      .end((err, res) => {
+        assert.equal(res.body.error, "invalid unit");
+        done();
+      });
+  });
+
+  test("No number provided (GET /api/convert?input=kg)", function (done) {
+    chai.request(server)
+      .get("/api/convert?input=kg")
+      .end((err, res) => {
+        assert.equal(res.body.initNum, 1);
+        done();
+      });
+  });
+});

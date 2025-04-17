@@ -1,0 +1,25 @@
+const ConvertHandler = require("../controllers/convertHandler");
+const assert = require("chai").assert;
+const convertHandler = new ConvertHandler();
+
+suite("Unit Tests", function () {
+  test("Read whole number input", function () {
+    assert.equal(convertHandler.getNum("32mi"), 32);
+  });
+
+  test("Read decimal number input", function () {
+    assert.equal(convertHandler.getNum("3.5kg"), 3.5);
+  });
+
+  test("Read fractional input", function () {
+    assert.equal(convertHandler.getNum("1/2mi"), 0.5);
+  });
+
+  test("Return error on double-fraction", function () {
+    assert.equal(convertHandler.getNum("3/2/3kg"), "invalid number");
+  });
+
+  test("Correctly convert miles to km", function () {
+    assert.equal(convertHandler.convert(1, "mi"), 1.60934);
+  });
+});

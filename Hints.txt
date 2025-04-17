@@ -1,0 +1,8 @@
+Solution Explanation:
+
+✔ Handles API requests in api.js
+✔ Extracts number and unit from convertHandler.js 
+✔ Correctly converts values based on predefined conversion rates 
+✔ Returns results with properly formatted strings 
+✔ Handles various cases like fractions, invalid inputs, missing numbers
+✔ Supports unit and functional tests in tests/1_unit-tests.js and tests/2_functional-tests.js
