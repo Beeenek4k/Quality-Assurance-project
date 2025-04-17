@@ -19,7 +19,11 @@ GitHub Actions (CI/CD for automated testing)
 
 Project Setup
 Prerequisites:
-Before setting up the project, ensure you have: ✅ Node.js installed ✅ Git for version control ✅ PostgreSQL/MongoDB (if applicable)
+Before setting up the project, ensure you have: 
+
+- Node.js installed 
+- Git for version control 
+- PostgreSQL/MongoDB (if applicable)
 
 Installation:
 Clone the repository and install dependencies:
