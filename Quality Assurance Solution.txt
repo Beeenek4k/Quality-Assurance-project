@@ -1,0 +1,181 @@
+Step 1: Set Up Your Project
+Clone the repository (or create a new project)
+
+bash
+git clone https://github.com/freeCodeCamp/boilerplate-project-metricimpconverter.git
+cd boilerplate-project-metricimpconverter
+npm install
+Create and configure environment variables
+
+Copy sample.env to .env
+
+bash
+cp sample.env .env
+Add NODE_ENV=test in .env
+
+Step 2: Implement Conversion Logic in convertHandler.js
+You’ll complete functions that parse inputs and perform conversions.
+
+Parsing Input (Extract Number and Unit)
+Modify /controllers/convertHandler.js to:
+
+Extract number (whole, decimal, fraction)
+
+Identify valid unit (gal, L, mi, km, lbs, kg)
+
+Validate input (reject invalid numbers/units)
+
+Example:
+
+javascript
+function ConvertHandler() {
+  this.getNum = function(input) {
+    const result = input.match(/[\d/.]+/);
+    return result ? eval(result[0]) : 1; // Default to 1 if no number
+  };
+
+  this.getUnit = function(input) {
+    const result = input.match(/[a-zA-Z]+$/);
+    return result ? result[0].toLowerCase() : "invalid unit";
+  };
+
+  this.getReturnUnit = function(initUnit) {
+    const units = { gal: "L", L: "gal", lbs: "kg", kg: "lbs", mi: "km", km: "mi" };
+    return units[initUnit.toLowerCase()] || "invalid unit";
+  };
+
+  this.convert = function(initNum, initUnit) {
+    const conversionRates = { gal: 3.78541, L: 1 / 3.78541, lbs: 0.453592, kg: 1 / 0.453592, mi: 1.60934, km: 1 / 1.60934 };
+    return initNum * (conversionRates[initUnit.toLowerCase()] || NaN);
+  };
+}
+Step 3: Handle API Routes in api.js
+Modify /routes/api.js to:
+
+Accept conversion requests
+
+Validate and process input
+
+Respond with formatted JSON
+
+Example:
+
+javascript
+const express = require("express");
+const ConvertHandler = require("../controllers/convertHandler");
+const router = express.Router();
+
+const convertHandler = new ConvertHandler();
+
+router.get("/api/convert", (req, res) => {
+  const input = req.query.input;
+  const initNum = convertHandler.getNum(input);
+  const initUnit = convertHandler.getUnit(input);
+
+  if (isNaN(initNum) || initUnit === "invalid unit") {
+    return res.json({ error: initNum === "invalid number" ? "invalid number" : "invalid unit" });
+  }
+
+  const returnNum = convertHandler.convert(initNum, initUnit);
+  const returnUnit = convertHandler.getReturnUnit(initUnit);
+
+  res.json({
+    initNum,
+    initUnit,
+    returnNum: parseFloat(returnNum.toFixed(5)),
+    returnUnit,
+    string: `${initNum} ${initUnit} converts to ${returnNum.toFixed(5)} ${returnUnit}`,
+  });
+});
+
+module.exports = router;
+Step 4: Write Unit and Functional Tests
+Modify /tests/1_unit-tests.js to test:
+
+Whole numbers, decimals, fractions
+
+Invalid inputs (e.g., 3/2/3 or invalidUnit)
+
+Correct conversions between metric and imperial
+
+Example:
+
+javascript
+suite("Unit Tests", function () {
+  test("Read a whole number input", function () {
+    assert.equal(convertHandler.getNum("32mi"), 32);
+  });
+
+  test("Read a decimal number input", function () {
+    assert.equal(convertHandler.getNum("3.5kg"), 3.5);
+  });
+
+  test("Return an error on double-fraction", function () {
+    assert.isNaN(convertHandler.getNum("3/2/3kg"));
+  });
+
+  test("Correctly convert miles to km", function () {
+    assert.equal(convertHandler.convert(1, "mi"), 1.60934);
+  });
+});
+Modify /tests/2_functional-tests.js to test:
+
+Valid conversions (GET /api/convert?input=10L)
+
+Invalid inputs (GET /api/convert?input=32g)
+
+Missing number (GET /api/convert?input=kg)
+
+Example:
+
+javascript
+suite("Functional Tests", function () {
+  test("Convert a valid input", function (done) {
+    chai.request(server)
+      .get("/api/convert?input=10L")
+      .end((err, res) => {
+        assert.equal(res.body.initNum, 10);
+        assert.equal(res.body.initUnit, "L");
+        assert.equal(res.body.returnUnit, "gal");
+        done();
+      });
+  });
+
+  test("Convert with no number (default to 1)", function (done) {
+    chai.request(server)
+      .get("/api/convert?input=kg")
+      .end((err, res) => {
+        assert.equal(res.body.initNum, 1);
+        assert.equal(res.body.initUnit, "kg");
+        done();
+      });
+  });
+
+  test("Convert an invalid unit", function (done) {
+    chai.request(server)
+      .get("/api/convert?input=32g")
+      .end((err, res) => {
+        assert.equal(res.body.error, "invalid unit");
+        done();
+      });
+  });
+});
+Step 5: Run Tests
+Make sure all tests pass:
+
+bash
+npm run test
+If everything is successful, you should see all unit and functional tests passing.
+
+Step 6: Deploy & Submit
+Push your code to GitHub
+
+bash
+git init
+git add .
+git commit -m "Metric-Imperial Converter"
+git remote add origin <your-repo-url>
+git push origin main
+Deploy using a hosting platform like Render or Vercel to get a live API link.
+
+Submit your source code URL and deployed API URL to FreeCodeCamp.
